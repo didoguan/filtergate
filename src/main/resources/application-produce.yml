@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.17.0.3:3306/filtergate?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: shoesmall
+    password: master
+    filters: wall,mergeStat
+
+#多数据源情况的配置
+stone:
+  muti-datasource:
+    open: false
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.17.0.3:3306/filtergate?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: shoesmall
+    password: master
+    dataSourceNames:
+    - master
+    - slave

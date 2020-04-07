@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deepspc.filtergate.modular.warm.mapper.WarmMapper">
+
+    <resultMap id="ModelRoomDatas" type="com.deepspc.filtergate.modular.warm.model.ModelRoomDto">
+        <result column="model_id" property="modelId"/>
+        <result column="room_id" property="roomId"/>
+        <result column="room_name" property="roomName"/>
+        <result column="serial_no" property="serialNo"/>
+        <result column="unique_no" property="uniqueNo"/>
+        <result column="temperature" property="temperature"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="runing_status" property="runingStatus"/>
+        <result column="status" property="status"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="icon_path" property="iconPath"/>
+    </resultMap>
+
+    <select id="getModelRooms" resultMap="ModelRoomDatas">
+        SELECT
+            wmr.model_id,
+            wri.room_id,
+            wri.room_name,
+            wri.serial_no,
+            wri.unique_no,
+            wri.temperature,
+            wri.start_time,
+            wri.end_time,
+            wri.runing_status,
+            wri.status,
+            wri.customer_id,
+            wri.icon_path
+        FROM
+            wm_model_room wmr,
+            wm_room_info wri
+        WHERE
+            wmr.room_id = wri.room_id
+        AND wmr.model_id = #{modelId}
+        AND wri.customer_id = #{customerId}
+    </select>
+
+</mapper>

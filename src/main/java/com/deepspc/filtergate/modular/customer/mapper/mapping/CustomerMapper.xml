@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deepspc.filtergate.modular.customer.mapper.CustomerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deepspc.filtergate.modular.customer.entity.Customer">
+        <id column="customer_id" property="customerId"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="province_value" property="provinceValue"/>
+        <result column="city_value" property="cityValue"/>
+        <result column="district_value" property="districtValue"/>
+        <result column="sub_address" property="subAddress"/>
+        <result column="contact_person" property="contactPerson"/>
+        <result column="contact_number" property="contactNumber"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="base_column">
+        customer_id "customerId", customer_name "customerName", province_value "provinceValue",
+        city_value "cityValue", district_value "districtValue", sub_address "subAddress",
+        contact_person "contactPerson", contact_number "contactNumber", create_time "createTime"
+    </sql>
+
+    <select id="getCustomers" resultType="map">
+        select
+        <include refid="base_column"/>
+        from t_customer
+        <if test="customerName != null and customerName != ''">
+            where customer_name like CONCAT('%',#{customerName},'%')
+        </if>
+        order by create_time desc
+    </select>
+
+</mapper>
