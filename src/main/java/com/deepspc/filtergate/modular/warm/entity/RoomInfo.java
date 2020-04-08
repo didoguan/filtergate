@@ -24,6 +24,9 @@ public class RoomInfo implements Serializable {
 	@TableField("room_name")
 	private String roomName;
 
+    @TableField("model_id")
+	private Long modelId;
+
 	@TableField("unique_no")
 	private String uniqueNo;
 

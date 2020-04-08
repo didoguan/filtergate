@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.deepspc.filtergate.modular.warm.entity.RoomInfo">
         <id column="room_id" property="roomId"/>
         <result column="room_name" property="roomName"/>
+        <result column="model_id" property="modelId"/>
         <result column="unique_no" property="uniqueNo"/>
         <result column="serial_no" property="serialNo"/>
         <result column="temperature" property="temperature"/>
