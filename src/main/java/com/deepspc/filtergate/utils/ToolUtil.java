@@ -155,6 +155,45 @@ public class ToolUtil {
 		}
 	}
 
+	/**
+	 * 日期往后推或往前移指定天数,整数往前移,负数往后推
+	 * @param day 要移动的天数
+	 * @return
+	 */
+	public static Date moveDay(int day) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(calendar.DATE, day);
+		return calendar.getTime();
+	}
+
+	/**
+	 * 日期往后推或往前移指定月份,整数往前移,负数往前后推
+	 * @param month
+	 * @return
+	 */
+	public static Date moveMonth(int month) {
+		if (month > 12 || month < -12) {
+			return null;
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + month);
+		return calendar.getTime();
+	}
+
+	/**
+	 * 日期往后推或往前移指定年份,整数往前移,负数往前后推
+	 * @param year
+	 * @return
+	 */
+	public static Date moveYear(int year) {
+		if (year > 100 || year < -100) {
+			return null;
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + year);
+		return calendar.getTime();
+	}
+
     /**
      * 获取临时目录
      */

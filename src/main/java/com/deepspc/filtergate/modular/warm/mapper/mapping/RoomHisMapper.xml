@@ -6,10 +6,59 @@
     <resultMap id="BaseResultMap" type="com.deepspc.filtergate.modular.warm.entity.RoomHis">
         <id column="his_id" property="hisId"/>
         <result column="room_id" property="roomId"/>
+        <result column="unique_no" property="uniqueNo"/>
+        <result column="serial_no" property="serialNo"/>
         <result column="temperature" property="temperature"/>
         <result column="humidity" property="humidity"/>
         <result column="create_time" property="createTime"/>
     </resultMap>
 
+    <select id="roomTmpHumStatistics">
+        SELECT
+            t.room_id,
+            t.unique_no,
+            t.serial_no,
+            t.create_time,
+            t.temperature,
+            t.humidity
+        FROM
+            (
+                SELECT
+                    rh.room_id,
+                    rh.unique_no,
+                    rh.serial_no,
+                    <if test="type == 'D'">
+                    date_format(rh.create_time, '%Y-%m-%d %H') create_time,
+                    </if>
+                    <if test="type == 'M'">
+                    date_format(rh.create_time, '%Y-%m-%d') create_time,
+                    </if>
+                    <if test="type == 'Y'">
+                    date_format(rh.create_time, '%Y-%m') create_time,
+                    </if>
+                    avg(rh.temperature) temperature,
+                    avg(rh.humidity) humidity
+                FROM
+                    wm_room_his rh
+                WHERE
+                    rh.create_time &gt;= #{startTime} and rh.create_time &lt;= #{endTime}
+                    AND rh.unique_no = #{uniqueNo}
+                GROUP BY
+                    rh.room_id,
+                    rh.unique_no,
+                    rh.serial_no,
+                    <if test="type == 'D'">
+                    date_format(rh.create_time, '%Y-%m-%d %H')
+                    </if>
+                    <if test="type == 'M'">
+                    date_format(rh.create_time, '%Y-%m-%d')
+                    </if>
+                    <if test="type == 'Y'">
+                    date_format(rh.create_time, '%Y-%m')
+                    </if>
+            ) t
+        ORDER BY
+            t.create_time ASC
+    </select>
 
 </mapper>

@@ -29,6 +29,12 @@ public class RoomHis implements Serializable {
 	@TableField("room_id")
 	private Long roomId;
 
+	@TableField("unique_no")
+	private String uniqueNo;
+
+	@TableField("serial_no")
+	private String serialNo;
+
 	@TableField("temperature")
 	private Float temperature;
 
