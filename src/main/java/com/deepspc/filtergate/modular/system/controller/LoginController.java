@@ -130,7 +130,7 @@ public class LoginController extends BaseController {
 	private ResponseData checkUserValid(String username, String password) {
 		ResponseData resp = new ResponseData();
 		resp.setCode(200);
-		resp.setSuccess(true);/*
+		resp.setSuccess(true);
 		try {
 			username = RSAUtil.decodePrivate(username);
 			password = RSAUtil.decodePrivate(password);
@@ -141,7 +141,7 @@ public class LoginController extends BaseController {
 			resp.setSuccess(false);
 			e.printStackTrace();
 			return resp;
-		}*/
+		}
 		Subject currentUser = ShiroKit.getSubject();
 		UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray());
 
