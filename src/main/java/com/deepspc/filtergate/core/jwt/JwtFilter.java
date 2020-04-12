@@ -3,6 +3,8 @@ package com.deepspc.filtergate.core.jwt;
 import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
+import com.deepspc.filtergate.core.exception.BizExceptionEnum;
+import com.deepspc.filtergate.core.exception.ServiceException;
 import com.deepspc.filtergate.utils.CacheUtil;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 
@@ -30,20 +32,21 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			if (StrUtil.isBlank(token)) {
-				return false;
+				throw new ServiceException(BizExceptionEnum.TOKEN_ERROR.getCode(), BizExceptionEnum.TOKEN_ERROR.getMessage());
 			} else {
+				long id = -1;
+				Map<String, Claim> claimMap;
 				try {
-					Map<String, Claim> claimMap = JwtUtil.verifyToken(token);
-					Claim claim = claimMap.get("id");
-					long id = claim.asLong().longValue();
-					request.setAttribute("tokenUserId", id);
-					String cacheToken = CacheUtil.get(CacheUtil.JWT, "rpc_" + id);
-					if (StrUtil.isBlank(cacheToken)) {
-						return false;
-					}
+					claimMap = JwtUtil.verifyToken(token);
 				} catch (JWTVerificationException e) {
-					e.printStackTrace();
-					return false;
+					throw new ServiceException(BizExceptionEnum.TOKEN_EXPIRED.getCode(), BizExceptionEnum.TOKEN_EXPIRED.getMessage());
+				}
+				Claim claim = claimMap.get("id");
+				id = claim.asLong().longValue();
+				request.setAttribute("tokenUserId", id);
+				String cacheToken = CacheUtil.get(CacheUtil.JWT, "rpc_" + id);
+				if (StrUtil.isBlank(cacheToken)) {
+					throw new ServiceException(BizExceptionEnum.TOKEN_ERROR.getCode(), BizExceptionEnum.TOKEN_ERROR.getMessage());
 				}
 			}
 		}
