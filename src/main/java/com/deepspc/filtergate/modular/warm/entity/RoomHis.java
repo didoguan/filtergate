@@ -43,4 +43,7 @@ public class RoomHis implements Serializable {
 
 	@TableField("create_time")
 	private Date createTime;
+
+	@TableField(exist = false)
+	private String createTimeStr;
 }

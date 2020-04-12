@@ -44,6 +44,7 @@ public interface Const {
 			"/global/sessionError",
 			"/kaptcha",
 			"/error",
-			"/global/error");
+			"/global/error",
+			"/system/getString");
 
 }

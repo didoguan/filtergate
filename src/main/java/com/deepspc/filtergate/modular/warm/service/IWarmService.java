@@ -42,6 +42,12 @@ public interface IWarmService {
 	void delteModelsRooms(String ids);
 
 	/**
+	 * 修改模式下的房间
+	 * @param roomInfo
+	 */
+	void updateModelRoom(RoomInfo roomInfo);
+
+	/**
 	 * 获取所有消息
 	 * @param customerId
 	 * @return

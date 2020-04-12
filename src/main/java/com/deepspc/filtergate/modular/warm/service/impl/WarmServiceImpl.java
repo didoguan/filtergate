@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 供暖服务类
@@ -106,6 +108,14 @@ public class WarmServiceImpl implements IWarmService {
     }
 
 	@Override
+	@Transactional
+    public void updateModelRoom(RoomInfo roomInfo) {
+		QueryWrapper<RoomInfo> updWrapper = new QueryWrapper<>();
+		updWrapper.eq("unique_no", roomInfo.getUniqueNo());
+		roomInfoService.update(roomInfo, updWrapper);
+	}
+
+	@Override
 	public List<Message> getAllMessage(Long customerId) {
 		QueryWrapper<Message> msgWrapper = new QueryWrapper<>();
 		msgWrapper.eq("customer_id", customerId);
@@ -137,25 +147,22 @@ public class WarmServiceImpl implements IWarmService {
 
 	@Override
 	public List<RoomHis> getRoomHistory(String type, String uniqueNo) {
-		SimpleDateFormat sdf = new SimpleDateFormat();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String startTime;
 		Date date;
 		switch (type) {
 			case "D" :
 				//往后一天
 				date = ToolUtil.moveDay(-1);
-				sdf.applyPattern("yyyy-MM-dd HH");
 				startTime = sdf.format(date);
 				break;
 			case "M" :
 				//往后一月
 				date = ToolUtil.moveMonth(-1);
-				sdf.applyPattern("yyyy-MM-dd");
 				startTime = sdf.format(date);
 				break;
 			case "Y" ://往后一年
 				date = ToolUtil.moveYear(-1);
-				sdf.applyPattern("yyyy-MM-dd");
 				startTime = sdf.format(date);
 				break;
 			default : return null;
@@ -163,7 +170,14 @@ public class WarmServiceImpl implements IWarmService {
 		Date current = new Date();
 		sdf.applyPattern("yyyy-MM-dd HH:mm:ss");
 		String endTime = sdf.format(current);
-		return roomHisService.roomTmpHumStatistics(type, uniqueNo, startTime, endTime);
+
+		Map<String, Object> param = new HashMap<>(4);
+		param.put("type", type);
+		param.put("uniqueNo", uniqueNo);
+		param.put("startTime", startTime + " 00:00:00");
+		param.put("endTime", endTime);
+
+		return roomHisService.roomTmpHumStatistics(param);
 	}
 
 	@Override

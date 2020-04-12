@@ -3,7 +3,7 @@
 <mapper namespace="com.deepspc.filtergate.modular.warm.mapper.RoomHisMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.deepspc.filtergate.modular.warm.entity.RoomHis">
+    <resultMap id="RoomHisMap" type="com.deepspc.filtergate.modular.warm.entity.RoomHis">
         <id column="his_id" property="hisId"/>
         <result column="room_id" property="roomId"/>
         <result column="unique_no" property="uniqueNo"/>
@@ -11,14 +11,15 @@
         <result column="temperature" property="temperature"/>
         <result column="humidity" property="humidity"/>
         <result column="create_time" property="createTime"/>
+        <result column="create_time_str" property="createTimeStr"/>
     </resultMap>
 
-    <select id="roomTmpHumStatistics">
+    <select id="roomTmpHumStatistics" resultMap="RoomHisMap" parameterType="map">
         SELECT
             t.room_id,
             t.unique_no,
             t.serial_no,
-            t.create_time,
+            t.create_time_str,
             t.temperature,
             t.humidity
         FROM
@@ -27,38 +28,38 @@
                     rh.room_id,
                     rh.unique_no,
                     rh.serial_no,
-                    <if test="type == 'D'">
-                    date_format(rh.create_time, '%Y-%m-%d %H') create_time,
+                    <if test='"D" eq param.type'>
+                    date_format(rh.create_time, '%Y-%m-%d %H') create_time_str,
                     </if>
-                    <if test="type == 'M'">
-                    date_format(rh.create_time, '%Y-%m-%d') create_time,
+                    <if test='"M" eq param.type'>
+                    date_format(rh.create_time, '%Y-%m-%d') create_time_str,
                     </if>
-                    <if test="type == 'Y'">
-                    date_format(rh.create_time, '%Y-%m') create_time,
+                    <if test='"Y" eq param.type'>
+                    date_format(rh.create_time, '%Y-%m') create_time_str,
                     </if>
                     avg(rh.temperature) temperature,
                     avg(rh.humidity) humidity
                 FROM
                     wm_room_his rh
                 WHERE
-                    rh.create_time &gt;= #{startTime} and rh.create_time &lt;= #{endTime}
-                    AND rh.unique_no = #{uniqueNo}
+                    rh.create_time &gt;= #{param.startTime} and rh.create_time &lt;= #{param.endTime}
+                    AND rh.unique_no = #{param.uniqueNo}
                 GROUP BY
                     rh.room_id,
                     rh.unique_no,
                     rh.serial_no,
-                    <if test="type == 'D'">
+                    <if test='"D" eq param.type'>
                     date_format(rh.create_time, '%Y-%m-%d %H')
                     </if>
-                    <if test="type == 'M'">
+                    <if test='"M" eq param.type'>
                     date_format(rh.create_time, '%Y-%m-%d')
                     </if>
-                    <if test="type == 'Y'">
+                    <if test='"Y" eq param.type'>
                     date_format(rh.create_time, '%Y-%m')
                     </if>
             ) t
         ORDER BY
-            t.create_time ASC
+            t.create_time_str ASC
     </select>
 
 </mapper>

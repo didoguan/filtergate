@@ -19,6 +19,7 @@ import com.deepspc.filtergate.modular.system.entity.User;
 import com.deepspc.filtergate.modular.system.factory.UserFactory;
 import com.deepspc.filtergate.modular.system.service.FileInfoService;
 import com.deepspc.filtergate.modular.system.service.UserService;
+import com.deepspc.filtergate.utils.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -215,4 +216,15 @@ public class SystemController extends BaseController {
         return ResponseData.success(hashMap);
     }
 
+	/**
+	 * 获取用于加密的公钥
+	 * @return
+	 */
+	@RequestMapping(value = "/getString")
+	@ResponseBody
+	public Object getPublicKey() {
+		ResponseData resp = new ResponseData(true, 200, null, null);
+		resp.setData(RSAUtil.getPublicKey());
+		return resp;
+	}
 }

@@ -9,8 +9,6 @@ import com.deepspc.filtergate.modular.warm.entity.RoomHis;
 import com.deepspc.filtergate.modular.warm.entity.RoomInfo;
 import com.deepspc.filtergate.modular.warm.model.ModelData;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
-import com.deepspc.filtergate.modular.warm.service.IModelInfoService;
-import com.deepspc.filtergate.modular.warm.service.IRoomInfoService;
 import com.deepspc.filtergate.modular.warm.service.IWarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -77,7 +75,7 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/removeModel")
     @ResponseBody
-    public Object removeModel(Long modelId) {
+    public Object removeModel(@RequestParam Long modelId) {
         ResponseData resp = new ResponseData(true, 200, null, null);
         if (null != modelId) {
             warmService.deleteModel(modelId);
@@ -108,6 +106,20 @@ public class WarmController extends BaseController {
         return resp;
     }
 
+	@RequestMapping(value = "/editRoom")
+	@ResponseBody
+    public Object editRoom(@RequestBody RoomInfo roomInfo) {
+		ResponseData resp = new ResponseData(true, 200, null, null);
+		if (null != roomInfo) {
+			warmService.updateModelRoom(roomInfo);
+		} else {
+			resp.setCode(201);
+			resp.setSuccess(false);
+			resp.setMessage("房间信息为空");
+		}
+		return resp;
+	}
+
 	/**
 	 * 删除房间
 	 * @param roomIds
@@ -134,7 +146,7 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/getRoomInfo")
 	@ResponseBody
-	public Object getRoomInfo(String uniqueNo) {
+	public Object getRoomInfo(@RequestParam String uniqueNo) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
 		if (StrUtil.isNotBlank(uniqueNo)) {
 			RoomInfo roomInfo = warmService.getRoomInfo(uniqueNo);
@@ -149,12 +161,11 @@ public class WarmController extends BaseController {
 
 	/**
 	 * 获取所有消息
-	 * @param customerId
 	 * @return
 	 */
 	@RequestMapping(value = "/getAllMessage")
 	@ResponseBody
-    public Object getAllMessage(Long customerId) {
+    public Object getAllMessage() {
 		ResponseData resp = new ResponseData(true, 200, null, null);
 		Object id = this.getHttpServletRequest().getAttribute("tokenUserId");
 		if (null != id) {
@@ -175,7 +186,7 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/removeMessage")
 	@ResponseBody
-	public Object removeMessage(Long messageId) {
+	public Object removeMessage(@RequestParam Long messageId) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
 		if (null != messageId) {
 			warmService.deleteMessage(messageId);
@@ -194,7 +205,7 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/getMessage")
 	@ResponseBody
-	public Object getMessage(Long messageId) {
+	public Object getMessage(@RequestParam Long messageId) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
 		if (null != messageId) {
 			Message msg = warmService.getMsgDetail(messageId);
@@ -212,7 +223,7 @@ public class WarmController extends BaseController {
 	 * @param dtos
 	 * @return
 	 */
-	@RequestMapping(value = "/customerConfig")
+	@RequestMapping(value = "/saveCustomerConfig")
 	@ResponseBody
 	public Object customerConfig(@RequestBody List<CustomerConf> dtos) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
@@ -233,7 +244,7 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/getCustomerConfigs")
 	@ResponseBody
-	public Object getCustomerConfigs(Long customerId) {
+	public Object getCustomerConfigs(@RequestParam Long customerId) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
 		if (null != customerId) {
 			List<CustomerConf> list = warmService.getCustomerConfigs(customerId);

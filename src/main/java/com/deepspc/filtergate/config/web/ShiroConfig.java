@@ -2,6 +2,7 @@ package com.deepspc.filtergate.config.web;
 
 import com.deepspc.filtergate.config.properties.FiltergateProperties;
 import com.deepspc.filtergate.core.interceptor.FiltergateUserFilter;
+import com.deepspc.filtergate.core.jwt.JwtFilter;
 import com.deepspc.filtergate.core.shiro.ShiroDbRealm;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -131,6 +132,7 @@ public class ShiroConfig {
          * 覆盖默认的user拦截器(默认拦截器解决不了ajax请求 session超时的问题,若有更好的办法请及时反馈作者)
          */
         HashMap<String, Filter> myFilters = new HashMap<>();
+		myFilters.put("jwtauth", new JwtFilter());
         myFilters.put("user", new FiltergateUserFilter());
         shiroFilter.setFilters(myFilters);
 
@@ -152,6 +154,7 @@ public class ShiroConfig {
         for (String nonePermissionRe : NONE_PERMISSION_RES) {
             hashMap.put(nonePermissionRe, "anon");
         }
+		hashMap.put("/rpc/**", "jwtauth");
         hashMap.put("/**", "user");
         shiroFilter.setFilterChainDefinitionMap(hashMap);
         return shiroFilter;

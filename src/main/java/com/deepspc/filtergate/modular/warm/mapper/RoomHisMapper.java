@@ -5,15 +5,13 @@ import com.deepspc.filtergate.modular.warm.entity.RoomHis;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RoomHisMapper extends BaseMapper<RoomHis> {
 
 	/**
 	 * 获取房间历史温湿度
-	 * @param type D-日 M-月 Y-年
-	 * @param startTime
-	 * @param endTime
 	 * @return
 	 */
-	List<RoomHis> roomTmpHumStatistics(@Param("type") String type, @Param("uniqueNo") String uniqueNo, @Param("startTime") String startTime, @Param("endTime") String endTime);
+	List<RoomHis> roomTmpHumStatistics(@Param("param") Map<String, Object> param);
 }
