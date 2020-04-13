@@ -31,7 +31,7 @@ spring:
       max-request-size: 100MB
       max-file-size: 100MB
   application:
-    name: "arena管理系统"
+    name: "智能监控管理系统"
 
 mybatis-plus:
   typeAliasesPackage: com.deepspc.filtergate.modular.*.entity
