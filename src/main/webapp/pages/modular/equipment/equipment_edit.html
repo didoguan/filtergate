@@ -1,0 +1,53 @@
+@layout("/common/_container.html",{bg:"bg-white",js:["/assets/modular/equipment/equipment_edit.js"]}){
+<form id="equipmentForm" lay-filter="equipmentForm" class="layui-form model-form">
+    <input name="equipmentId" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">设备名称<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <input name="equipmentName" placeholder="请输入设备名称" type="text" class="layui-input" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">唯一码</label>
+        <div class="layui-input-block">
+            <input name="uniqueNo" placeholder="请输入设备唯一码" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">序列号</label>
+        <div class="layui-input-block">
+            <input name="serialNo" placeholder="请输入设备序列号" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">设备类型<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <select name="equipmentType" id="equipmentType" lay-verify="required">
+                <option value=""></option>
+                <option value="1">控制器主机</option>
+                <option value="2">温度执行器</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属客户</label>
+        <div class="layui-input-block">
+            <input name="customerId" placeholder="请输入所属客户" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">设备状态<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <select name="status" id="status" lay-verify="required">
+                <option value=""></option>
+                <option value="1">启用</option>
+                <option value="0">停用</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
+    </div>
+</form>
+@}
