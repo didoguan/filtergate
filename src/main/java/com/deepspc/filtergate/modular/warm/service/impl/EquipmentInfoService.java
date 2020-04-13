@@ -1,12 +1,12 @@
-package com.deepspc.filtergate.modular.equipment.service.impl;
+package com.deepspc.filtergate.modular.warm.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.deepspc.filtergate.core.common.page.LayuiPageFactory;
-import com.deepspc.filtergate.modular.equipment.entity.Equipment;
-import com.deepspc.filtergate.modular.equipment.mapper.EquipmentMapper;
-import com.deepspc.filtergate.modular.equipment.model.QueryParam;
-import com.deepspc.filtergate.modular.equipment.service.IEquipmentService;
+import com.deepspc.filtergate.modular.warm.entity.EquipmentInfo;
+import com.deepspc.filtergate.modular.warm.mapper.EquipmentInfoMapper;
+import com.deepspc.filtergate.modular.warm.model.QueryParam;
+import com.deepspc.filtergate.modular.warm.service.IEquipmentInfoService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.Map;
  * @Date 2020/4/13
  **/
 @Service
-public class EquipmentService extends ServiceImpl<EquipmentMapper, Equipment> implements IEquipmentService {
+public class EquipmentInfoService extends ServiceImpl<EquipmentInfoMapper, EquipmentInfo> implements IEquipmentInfoService {
     @Override
     public Page<Map<String, Object>> getEquipments(QueryParam queryParam) {
         Page page = LayuiPageFactory.defaultPage();

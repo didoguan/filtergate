@@ -1,4 +1,4 @@
-package com.deepspc.filtergate.modular.equipment.model;
+package com.deepspc.filtergate.modular.warm.model;
 
 import lombok.Data;
 

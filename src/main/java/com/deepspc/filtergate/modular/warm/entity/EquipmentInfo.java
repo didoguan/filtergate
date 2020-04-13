@@ -7,13 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Description 设备信息
  * @Author didoguan
  * @Date 2020/4/6
  **/
-@TableName("wm_ equipment_info")
+@TableName("wm_equipment_info")
 @Data
 public class EquipmentInfo implements Serializable {
 	private static final long serialVersionUID = 7978096619042012266L;
@@ -34,12 +35,27 @@ public class EquipmentInfo implements Serializable {
 	@TableField("serial_no")
 	private String serialNo;
 
+    /**
+     * 1-控制器主机
+     * 2-温度执行器
+     */
 	@TableField("equipment_type")
 	private Integer equipmentType;
 
 	@TableField("customer_id")
 	private Long customerId;
 
+    @TableField("customer_name")
+    private Long customerName;
+    /**
+     * 功率
+     */
+    @TableField("watts")
+    private Integer watts;
+
 	@TableField("status")
 	private Integer status;
+
+    @TableField("create_time")
+    private Date createTime;
 }

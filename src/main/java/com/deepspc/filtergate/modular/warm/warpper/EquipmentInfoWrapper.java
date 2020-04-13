@@ -1,4 +1,4 @@
-package com.deepspc.filtergate.modular.equipment.warpper;
+package com.deepspc.filtergate.modular.warm.warpper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.deepspc.filtergate.core.warpper.BaseControllerWrapper;
@@ -10,9 +10,9 @@ import java.util.Map;
  * @Author didoguan
  * @Date 2020/4/13
  **/
-public class EquipmentWrapper extends BaseControllerWrapper {
+public class EquipmentInfoWrapper extends BaseControllerWrapper {
 
-    public EquipmentWrapper(Page<Map<String, Object>> page) {
+    public EquipmentInfoWrapper(Page<Map<String, Object>> page) {
         super(page);
     }
 
