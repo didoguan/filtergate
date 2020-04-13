@@ -25,7 +25,7 @@
     <select id="getCustomers" resultType="map">
         select
         <include refid="base_column"/>
-        from t_customer
+        from wm_customer
         <if test="customerName != null and customerName != ''">
             where customer_name like CONCAT('%',#{customerName},'%')
         </if>

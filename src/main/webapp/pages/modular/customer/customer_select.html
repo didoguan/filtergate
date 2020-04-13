@@ -1,0 +1,23 @@
+@layout("/common/_container.html",{js:["/assets/modular/customer/customer_select.js"]}){
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-sm12 layui-col-md12 layui-col-lg12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <input id="customerName" class="layui-input" type="text" placeholder="客户名称"/>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="customerSelTable" lay-filter="customerSelTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@}

@@ -8,6 +8,24 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
     // 让当前iframe弹层高度适应
     admin.iframeAuto();
 
+    var EquipmentAdd = {};
+
+    EquipmentAdd.selCustomer = function () {
+        parent.layui.admin.open({
+            type: 2,
+            title: '选择客户',
+            area : ['850px' , '450px'],
+            content: Feng.ctxPath + '/customer/selCustomerPage',
+            end: function () {
+
+            }
+        });
+    };
+
+    $('#customerName').click(function () {
+        EquipmentAdd.selCustomer();
+    });
+
     // 表单提交事件
     form.on('submit(btnSubmit)', function (data) {
         var ajax = new $ax(Feng.ctxPath + "/equipment/save", function (data) {

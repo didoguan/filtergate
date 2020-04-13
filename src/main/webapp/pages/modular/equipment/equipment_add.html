@@ -1,6 +1,7 @@
 @layout("/common/_container.html",{bg:"bg-white",js:["/assets/modular/equipment/equipment_add.js"]}){
 <form id="equipmentForm" lay-filter="equipmentForm" class="layui-form model-form">
     <input name="equipmentId" type="hidden"/>
+    <input name="customerId" type="hidden"/>
     <div class="layui-form-item">
         <label class="layui-form-label">设备名称<span style="color: red;">*</span></label>
         <div class="layui-input-block">
@@ -32,7 +33,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">所属客户</label>
         <div class="layui-input-block">
-            <input name="customerId" placeholder="请输入所属客户" type="text" class="layui-input"/>
+            <input name="customerName" id="customerName" placeholder="请输入所属客户" type="text" class="layui-input" readonly/>
         </div>
     </div>
     <div class="layui-form-item">

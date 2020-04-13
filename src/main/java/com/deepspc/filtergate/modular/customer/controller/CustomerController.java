@@ -52,6 +52,11 @@ public class CustomerController extends BaseController {
 		return PREFIX + "/customer_edit.html";
 	}
 
+	@RequestMapping(value = "/selCustomerPage")
+	public String selectCustomerPage() {
+		return PREFIX + "/customer_select.html";
+	}
+
 	@RequestMapping(value = "/list")
 	@ResponseBody
 	public Object list(@RequestParam(value = "customerName", required = false) String customerName) {
