@@ -15,7 +15,7 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
 
     // 表单提交事件
     form.on('submit(btnSubmit)', function (data) {
-        var ajax = new $ax(Feng.ctxPath + "/equipment/edit", function (data) {
+        var ajax = new $ax(Feng.ctxPath + "/equipment/save", function (data) {
             Feng.success("修改成功!");
 
             //传给上个页面，刷新table用
