@@ -42,6 +42,18 @@
         }
     };
     Feng.addCtx("${ctxPath}");
+    var mainCallIframe = function(frameId,fn,param) {
+        var frame = window.frames[frameId];
+        var fnName = "frame." + fn  + "()";
+        if(frame == null){return;}
+        if(typeof(eval(fnName)) == 'function'){
+            frame.window[fn](param);
+        }
+    }
+    var MainCallBackData_ = {};
+    var setMainCallBackData = function(obj) {
+        MainCallBackData_ = obj;
+    }
 </script>
 <script type="text/javascript" src="${ctxPath}/assets/common/layui/layui.js"></script>
 <script type="text/javascript" src="${ctxPath}/assets/common/js/common.js"></script>

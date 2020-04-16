@@ -46,7 +46,7 @@ public class EquipmentInfo implements Serializable {
 	private Long customerId;
 
     @TableField("customer_name")
-    private Long customerName;
+    private String customerName;
     /**
      * 功率
      */

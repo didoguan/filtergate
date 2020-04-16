@@ -11,6 +11,7 @@ import com.deepspc.filtergate.modular.warm.model.QueryParam;
 import com.deepspc.filtergate.modular.warm.service.IEquipmentInfoService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -37,6 +38,9 @@ public class EquipmentInfoService extends ServiceImpl<EquipmentInfoMapper, Equip
 			throw new ServiceException(BizExceptionEnum.SAVE_OBJ_ERROR.getCode(),
 					BizExceptionEnum.SAVE_OBJ_ERROR.getMessage());
 		}
+		if (null == equipmentInfo.getEquipmentId()) {
+		    equipmentInfo.setCreateTime(new Date());
+        }
 		this.saveOrUpdate(equipmentInfo);
 	}
 

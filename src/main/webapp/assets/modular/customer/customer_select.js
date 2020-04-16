@@ -21,6 +21,7 @@ layui.use(['layer', 'form', 'table', 'admin', 'ax'], function () {
      */
     CustomerSel.initColumn = function () {
         return [[
+            {type: 'radio'},
             {field: 'customerId', hide: true, sort: false, title: 'id'},
             {field: 'customerName', sort: false, title: '客户名称'},
             {field: 'fullAddress', sort: false, title: '详细地址'}
@@ -51,4 +52,13 @@ layui.use(['layer', 'form', 'table', 'admin', 'ax'], function () {
         CustomerSel.search();
     });
 
+    CustomerSel.customerCallback = function() {
+        var checked = table.checkStatus(CustomerSel.tableId);
+        var row = checked.data[0];
+        parent.setMainCallBackData(row);
+        //关掉对话框
+        admin.closeThisDialog();
+    }
+
+    window.CustomerSel = CustomerSel;
 });

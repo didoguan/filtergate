@@ -16,7 +16,19 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
             title: '选择客户',
             area : ['850px' , '450px'],
             content: Feng.ctxPath + '/customer/selCustomerPage',
-            end: function () {
+            btn: ['确定','关闭'],
+            yes: function(index){
+                var frameId = "layui-layer-iframe" + index;
+                parent.mainCallIframe(frameId, "CustomerSel.customerCallback");
+                var row = parent.MainCallBackData_;
+                if (row) {
+                    $("#customerName").val(row.customerName);
+                    $("#customerId").val(row.customerId);
+                } else {
+                    layer.msg("请选择一个值！");
+                }
+            },
+            cancel: function(){
 
             }
         });
