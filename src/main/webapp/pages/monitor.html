@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+
+<script type="text/javascript">
+    var hasConnect = false;
+    var timeout;
+
+    function buildWebsocket() {
+        var ws = new WebSocket("ws://localhost:8800/wst");
+        ws.onopen = function(){
+            clearTimeout(timeout);
+            //与服务器创建连接
+            console.log("=========建立连接=========");
+            var data = {id:"icksEs37F1ds0_wsk",msg:"",deviceDatas:[]};
+            ws.send(JSON.stringify(data));
+        }
+        ws.onmessage = function(e){
+            //与服务器接收服务器发送的信息
+            console.log("=========获取服务器数据=========" + e.data);
+        }
+        ws.onclose = function(e){
+            //与服务器断开连接
+            console.log("=========断开连接=========");
+            reconnect();
+        }
+        ws.onerror = function(e){
+            console.log("=========连接出错=========");
+            reconnect();
+        }
+    }
+
+    function reconnect() {
+        if (hasConnect) {
+            return;
+        }
+        hasConnect = true;
+        //5秒后重连
+        timeout = setTimeout(function(){
+            buildWebsocket();
+            hasConnect = false;
+        }, 5000);
+
+    }
+
+    window.onload = function() {
+        buildWebsocket();
+    }
+
+</script>
+
+</body>
+
+</html>

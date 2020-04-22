@@ -227,4 +227,9 @@ public class SystemController extends BaseController {
 		resp.setData(RSAUtil.getPublicKey());
 		return resp;
 	}
+
+	@RequestMapping("/monitor")
+	public String dynamicMonitor() {
+		return "monitor.html";
+	}
 }
