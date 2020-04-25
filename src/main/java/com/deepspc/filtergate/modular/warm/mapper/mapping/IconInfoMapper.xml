@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deepspc.filtergate.modular.warm.mapper.IconInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deepspc.filtergate.modular.warm.entity.IconInfo">
+        <id column="icon_id" property="iconId"/>
+        <result column="old_name" property="oldName"/>
+        <result column="new_name" property="newName"/>
+        <result column="icon_path" property="iconPath"/>
+        <result column="access_path" property="accessPath"/>
+        <result column="icon_type" property="iconType"/>
+        <result column="relation_id" property="relationId"/>
+        <result column="use_type" property="useType"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+    
+    <resultMap id="IconDto" type="com.deepspc.filtergate.modular.warm.model.IconInfoDto">
+        <result column="icon_id" property="iconId"/>
+        <result column="access_path" property="accessPath"/>
+        <result column="icon_type" property="iconType"/>
+    </resultMap>
+
+    <select id="getAllAccessIcon" resultMap="IconDto">
+        select icon_id, icon_type, access_path from wm_icon_info where 1 = 1
+        <if test="iconType != null">
+            and icon_type = #{iconType}
+        </if>
+    </select>
+
+    <select id="getIconInfos" resultMap="IconDto">
+        select icon_id, icon_type, access_path from wm_icon_info where 1 = 1
+        <if test="params.relationId != null">
+            and (relation_id = #{params.relationId} or icon_id = #{params.relationId})
+        </if>
+        <if test="params.useType != null">
+            and use_type = #{params.useType}
+        </if>
+    </select>
+
+</mapper>

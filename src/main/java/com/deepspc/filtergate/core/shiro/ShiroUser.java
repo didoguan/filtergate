@@ -38,7 +38,10 @@ public class ShiroUser implements Serializable {
      * 头像
      */
     private String avatar;
-
+	/**
+	 * 所属客户
+	 */
+    private Long customerId;
     /**
      * 部门id
      */

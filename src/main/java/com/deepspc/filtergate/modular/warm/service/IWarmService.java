@@ -4,6 +4,7 @@ import com.deepspc.filtergate.modular.warm.entity.CustomerConf;
 import com.deepspc.filtergate.modular.warm.entity.Message;
 import com.deepspc.filtergate.modular.warm.entity.RoomHis;
 import com.deepspc.filtergate.modular.warm.entity.RoomInfo;
+import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
 import com.deepspc.filtergate.modular.warm.model.ModelData;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
 
@@ -93,4 +94,11 @@ public interface IWarmService {
 	 * @return
 	 */
 	RoomInfo getRoomInfo(String uniqueNo);
+
+	/**
+	 * 根据类型获取所有图标
+	 * @param iconType 1-头像 2-小图标
+	 * @return
+	 */
+	List<IconInfoDto> getAllAccessIcon(Integer iconType);
 }

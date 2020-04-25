@@ -297,6 +297,7 @@ public class ShiroKit {
         shiroUser.setName(user.getName());
         shiroUser.setEmail(user.getEmail());
         shiroUser.setAvatar(user.getAvatar());
+        shiroUser.setCustomerId(user.getCustomerId());
 
         return shiroUser;
     }

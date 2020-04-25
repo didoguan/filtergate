@@ -3,10 +3,8 @@ package com.deepspc.filtergate.modular.warm.controller;
 import cn.hutool.core.util.StrUtil;
 import com.deepspc.filtergate.core.reqres.response.ResponseData;
 import com.deepspc.filtergate.modular.controller.BaseController;
-import com.deepspc.filtergate.modular.warm.entity.CustomerConf;
-import com.deepspc.filtergate.modular.warm.entity.Message;
-import com.deepspc.filtergate.modular.warm.entity.RoomHis;
-import com.deepspc.filtergate.modular.warm.entity.RoomInfo;
+import com.deepspc.filtergate.modular.warm.entity.*;
+import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
 import com.deepspc.filtergate.modular.warm.model.ModelData;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
 import com.deepspc.filtergate.modular.warm.service.IWarmService;
@@ -269,6 +267,20 @@ public class WarmController extends BaseController {
 			resp.setSuccess(false);
 			resp.setMessage("过滤类型不合法");
 		}
+		return resp;
+	}
+
+	/**
+	 * 获取所有可选的小图标
+	 * @param iconType 1-头像 2-小图标
+	 * @return
+	 */
+	@RequestMapping(value = "/getAllSelIcon")
+	@ResponseBody
+	public Object getAllSelIcon(@RequestParam Integer iconType) {
+		ResponseData resp = new ResponseData(true, 200, null, null);
+		List<IconInfoDto> icons = warmService.getAllAccessIcon(iconType);
+		resp.setData(icons);
 		return resp;
 	}
 }

@@ -10,6 +10,7 @@
         <result column="end_time" property="endTime"/>
         <result column="status" property="status"/>
         <result column="customer_id" property="customerId"/>
+        <result column="icon_id" property="iconId"/>
         <result column="icon_path" property="iconPath"/>
     </resultMap>
 

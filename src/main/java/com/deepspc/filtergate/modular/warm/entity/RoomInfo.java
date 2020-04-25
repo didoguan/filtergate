@@ -51,6 +51,9 @@ public class RoomInfo implements Serializable {
 	@TableField("customer_id")
 	private Long customerId;
 
+	@TableField("icon_id")
+	private Long iconId;
+
 	@TableField("icon_path")
 	private String iconPath;
 

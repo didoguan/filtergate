@@ -114,6 +114,7 @@ public class LoginController extends BaseController {
 				String token = JwtUtil.createToken(userId.longValue());
 				Map<String, String> map = new HashMap<>();
 				map.put("userName", shiroUser.getName());
+				map.put("customerId", String.valueOf(shiroUser.getCustomerId()));
 				map.put("token", token);
 				CacheUtil.put(CacheUtil.JWT, "rpc_" + userId.longValue(), token);
 				resp.setData(map);

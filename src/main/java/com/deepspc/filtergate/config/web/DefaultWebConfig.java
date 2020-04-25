@@ -3,11 +3,13 @@ package com.deepspc.filtergate.config.web;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
+import com.deepspc.filtergate.config.properties.FiltergateProperties;
 import com.deepspc.filtergate.core.common.controller.FiltergateErrorView;
 import com.deepspc.filtergate.core.listener.ConfigListener;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.JdkRegexpMethodPointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -17,12 +19,18 @@ import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.xml.ws.Action;
+
 @Configuration
 public class DefaultWebConfig implements WebMvcConfigurer {
-	
+
+	@Autowired
+	private FiltergateProperties filtergateProperties;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
     	registry.addResourceHandler("/assets/**").addResourceLocations("classpath:/assets/");
+		registry.addResourceHandler("/warm/**").addResourceLocations(filtergateProperties.getWarmicon());
     }
     
 	@Bean

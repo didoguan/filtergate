@@ -82,6 +82,16 @@ public class User implements Serializable {
      */
     @TableField("STATUS")
     private String status;
+	/**
+	 * 用户类型 1-系统用户 2-应用用户
+	 */
+	@TableField("USER_TYPE")
+    private Integer userType;
+	/**
+	 * 所属客户
+	 */
+	@TableField("CUSTOMER_ID")
+    private Long customerId;
     /**
      * 创建时间
      */

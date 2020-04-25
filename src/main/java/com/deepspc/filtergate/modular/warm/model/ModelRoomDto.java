@@ -41,4 +41,6 @@ public class ModelRoomDto implements Serializable {
 	private Long customerId;
 
 	private String iconPath;
+
+	private String iconOffPath;
 }

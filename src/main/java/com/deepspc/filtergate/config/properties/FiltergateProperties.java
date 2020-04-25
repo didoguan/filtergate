@@ -34,6 +34,11 @@ public class FiltergateProperties {
      */
     private Integer sessionValidationInterval = 15 * 60;
 
+	/**
+	 * 供暖app图标存放路径
+	 */
+	private String warmicon;
+
     public String getFileUploadPath() {
         //如果没有写文件上传路径,保存到临时目录
         if (StrUtil.isEmpty(fileUploadPath)) {
@@ -104,4 +109,12 @@ public class FiltergateProperties {
     public void setSessionValidationInterval(Integer sessionValidationInterval) {
         this.sessionValidationInterval = sessionValidationInterval;
     }
+
+	public String getWarmicon() {
+		return warmicon;
+	}
+
+	public void setWarmicon(String warmicon) {
+		this.warmicon = warmicon;
+	}
 }

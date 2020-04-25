@@ -2,9 +2,11 @@ package com.deepspc.filtergate.modular.warm.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deepspc.filtergate.modular.warm.entity.*;
+import com.deepspc.filtergate.modular.warm.mapper.IconInfoMapper;
 import com.deepspc.filtergate.modular.warm.mapper.MessageMapper;
 import com.deepspc.filtergate.modular.warm.mapper.ModelInfoMapper;
 import com.deepspc.filtergate.modular.warm.mapper.WarmMapper;
+import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
 import com.deepspc.filtergate.modular.warm.model.ModelData;
 import com.deepspc.filtergate.modular.warm.model.ModelRoomDto;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
@@ -36,6 +38,8 @@ public class WarmServiceImpl implements IWarmService {
 	private ModelInfoMapper modelInfoMapper;
 	@Resource
 	private MessageMapper messageMapper;
+	@Resource
+	private IconInfoMapper iconInfoMapper;
 	@Autowired
 	private ICustomerConfService customerConfService;
 	@Autowired
@@ -53,8 +57,8 @@ public class WarmServiceImpl implements IWarmService {
 		data.setModelInfos(modelInfos);
 		if (null != modelInfos && !modelInfos.isEmpty()) {
 			for (ModelInfo modelInfo : modelInfos) {
-				//获取运行中模式的所有房间
-				if (modelInfo.getStatus().intValue() == 3) {
+				//获取所有可用房间
+				if (modelInfo.getStatus().intValue() == 1) {
 					long modelId = modelInfo.getModelId().longValue();
 					List<ModelRoomDto> list = warmMapper.getModelRooms(modelId, customerId);
 					data.setModelRooms(list);
@@ -73,6 +77,20 @@ public class WarmServiceImpl implements IWarmService {
         if (null == modelRooms || modelRooms.isEmpty()) {
             return;
         }
+        int status = modelInfo.getStatus().intValue();
+        Map<String, Object> params = new HashMap<>(16);
+		params.put("relationId", modelInfo.getIconId());
+        if (1 == status) {
+			params.put("useType", 1);
+		} else if (0 == status) {
+			params.put("useType", 0);
+		}
+		List<IconInfoDto> dtos = iconInfoMapper.getIconInfos(params);
+		if (null != dtos && !dtos.isEmpty()) {
+			IconInfoDto iconInfoDto = dtos.get(0);
+			modelInfo.setIconId(iconInfoDto.getIconId());
+			modelInfo.setIconPath(iconInfoDto.getAccessPath());
+		}
         modelInfoService.saveOrUpdate(modelInfo);
         for (RoomInfo roomInfo : modelRooms) {
             roomInfo.setCustomerId(customerId);
@@ -110,6 +128,20 @@ public class WarmServiceImpl implements IWarmService {
 	@Override
 	@Transactional
     public void updateModelRoom(RoomInfo roomInfo) {
+		Map<String, Object> params = new HashMap<>(16);
+		params.put("relationId", roomInfo.getIconId());
+		int status = roomInfo.getStatus().intValue();
+		if (1 == status) {
+			params.put("useType", 1);
+		} else if (0 == status) {
+			params.put("useType", 0);
+		}
+		List<IconInfoDto> dtos = iconInfoMapper.getIconInfos(params);
+		if (null != dtos && !dtos.isEmpty()) {
+			IconInfoDto dto = dtos.get(0);
+			roomInfo.setIconId(dto.getIconId());
+			roomInfo.setIconPath(dto.getAccessPath());
+		}
 		QueryWrapper<RoomInfo> updWrapper = new QueryWrapper<>();
 		updWrapper.eq("unique_no", roomInfo.getUniqueNo());
 		roomInfoService.update(roomInfo, updWrapper);
@@ -185,5 +217,10 @@ public class WarmServiceImpl implements IWarmService {
 		QueryWrapper<RoomInfo> rmWrapper = new QueryWrapper<>();
 		rmWrapper.eq("unique_no", uniqueNo);
 		return roomInfoService.getOne(rmWrapper);
+	}
+
+	@Override
+	public List<IconInfoDto> getAllAccessIcon(Integer iconType) {
+		return iconInfoMapper.getAllAccessIcon(iconType);
 	}
 }
