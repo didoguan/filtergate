@@ -277,7 +277,7 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/getAllSelIcon")
 	@ResponseBody
-	public Object getAllSelIcon(@RequestParam Integer iconType) {
+	public Object getAllSelIcon(@RequestParam(required = false) Integer iconType) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
 		List<IconInfoDto> icons = warmService.getAllAccessIcon(iconType);
 		resp.setData(icons);
