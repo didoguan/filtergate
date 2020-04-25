@@ -35,14 +35,10 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/getAllModels")
 	@ResponseBody
-	public Object getAllModels() {
+	public Object getAllModels(@RequestParam Long customerId) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
-		Object id = this.getHttpServletRequest().getAttribute("tokenUserId");
-		if (null != id) {
-			String tokenUserId = id.toString();
-			ModelData modelData = warmService.getAllModels(Long.parseLong(tokenUserId));
-			resp.setData(modelData);
-		}
+		ModelData modelData = warmService.getAllModels(customerId);
+		resp.setData(modelData);
 		return resp;
 	}
 

@@ -2,10 +2,7 @@ package com.deepspc.filtergate.modular.warm.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deepspc.filtergate.modular.warm.entity.*;
-import com.deepspc.filtergate.modular.warm.mapper.IconInfoMapper;
-import com.deepspc.filtergate.modular.warm.mapper.MessageMapper;
-import com.deepspc.filtergate.modular.warm.mapper.ModelInfoMapper;
-import com.deepspc.filtergate.modular.warm.mapper.WarmMapper;
+import com.deepspc.filtergate.modular.warm.mapper.*;
 import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
 import com.deepspc.filtergate.modular.warm.model.ModelData;
 import com.deepspc.filtergate.modular.warm.model.ModelRoomDto;
@@ -18,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description 供暖服务类
@@ -40,6 +34,8 @@ public class WarmServiceImpl implements IWarmService {
 	private MessageMapper messageMapper;
 	@Resource
 	private IconInfoMapper iconInfoMapper;
+	@Autowired
+	private IModelRoomService modelRoomService;
 	@Autowired
 	private ICustomerConfService customerConfService;
 	@Autowired
@@ -92,6 +88,7 @@ public class WarmServiceImpl implements IWarmService {
 			modelInfo.setIconPath(iconInfoDto.getAccessPath());
 		}
         modelInfoService.saveOrUpdate(modelInfo);
+
         for (RoomInfo roomInfo : modelRooms) {
             roomInfo.setCustomerId(customerId);
             roomInfo.setModelId(modelInfo.getModelId());
@@ -102,6 +99,15 @@ public class WarmServiceImpl implements IWarmService {
         delWrapper.eq("model_id", modelInfo.getModelId());
         roomInfoService.remove(delWrapper);
         roomInfoService.saveBatch(modelRooms);
+
+		List<ModelRoom> mrList = new ArrayList<>(16);
+		for (RoomInfo roomInfo : modelRooms) {
+			ModelRoom mr = new ModelRoom();
+			mr.setModelId(modelInfo.getModelId());
+			mr.setRoomId(roomInfo.getRoomId());
+			mrList.add(mr);
+		}
+		modelRoomService.saveBatch(mrList);
     }
 
     @Override
