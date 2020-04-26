@@ -98,14 +98,7 @@ public class WarmServiceImpl implements IWarmService {
             roomInfoService.remove(delWrapper);
             roomInfoService.saveBatch(modelRooms);
 
-            List<ModelRoom> mrList = new ArrayList<>(16);
-            for (RoomInfo roomInfo : modelRooms) {
-                ModelRoom mr = new ModelRoom();
-                mr.setModelId(modelInfo.getModelId());
-                mr.setRoomId(roomInfo.getRoomId());
-                mrList.add(mr);
-            }
-            modelRoomService.saveBatch(mrList);
+			batchSaveModelRoom(modelRooms);
         }
     }
 
@@ -118,8 +111,28 @@ public class WarmServiceImpl implements IWarmService {
     @Override
     @Transactional
     public void addModelsRoom(List<RoomInfo> roomInfos) {
-        roomInfoService.saveBatch(roomInfos);
+		if (null != roomInfos && !roomInfos.isEmpty()) {
+			roomInfoService.saveBatch(roomInfos);
+			batchSaveModelRoom(roomInfos);
+		}
     }
+
+	/**
+	 * 保存模式与房间的关系
+	 * @param rooms
+	 */
+	private void batchSaveModelRoom(List<RoomInfo> rooms) {
+		if (null != rooms && !rooms.isEmpty()) {
+			List<ModelRoom> mrList = new ArrayList<>(16);
+			for (RoomInfo roomInfo : rooms) {
+				ModelRoom mr = new ModelRoom();
+				mr.setModelId(roomInfo.getModelId());
+				mr.setRoomId(roomInfo.getRoomId());
+				mrList.add(mr);
+			}
+			modelRoomService.saveBatch(mrList);
+		}
+	}
 
     @Override
     @Transactional
