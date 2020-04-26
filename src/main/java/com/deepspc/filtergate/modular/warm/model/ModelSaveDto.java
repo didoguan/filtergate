@@ -16,6 +16,8 @@ import java.util.List;
 public class ModelSaveDto implements Serializable {
     private static final long serialVersionUID = -7933316385309271826L;
 
+    private Long customerId;
+
     private ModelInfo modelInfo;
 
     private List<RoomInfo> modelRooms;

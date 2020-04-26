@@ -70,9 +70,6 @@ public class WarmServiceImpl implements IWarmService {
     public void saveUpdateModelRoom(ModelSaveDto dto, Long customerId) {
         ModelInfo modelInfo = dto.getModelInfo();
         List<RoomInfo> modelRooms = dto.getModelRooms();
-        if (null == modelRooms || modelRooms.isEmpty()) {
-            return;
-        }
         int status = modelInfo.getStatus().intValue();
         Map<String, Object> params = new HashMap<>(16);
 		params.put("relationId", modelInfo.getIconId());
@@ -89,25 +86,27 @@ public class WarmServiceImpl implements IWarmService {
 		}
         modelInfoService.saveOrUpdate(modelInfo);
 
-        for (RoomInfo roomInfo : modelRooms) {
-            roomInfo.setCustomerId(customerId);
-            roomInfo.setModelId(modelInfo.getModelId());
-        }
-        //先删除当前模式下所有房间
-        QueryWrapper<RoomInfo> delWrapper = new QueryWrapper<>();
-        delWrapper.eq("customer_id", customerId);
-        delWrapper.eq("model_id", modelInfo.getModelId());
-        roomInfoService.remove(delWrapper);
-        roomInfoService.saveBatch(modelRooms);
+		if (null != modelRooms && !modelRooms.isEmpty()) {
+            for (RoomInfo roomInfo : modelRooms) {
+                roomInfo.setCustomerId(customerId);
+                roomInfo.setModelId(modelInfo.getModelId());
+            }
+            //先删除当前模式下所有房间
+            QueryWrapper<RoomInfo> delWrapper = new QueryWrapper<>();
+            delWrapper.eq("customer_id", customerId);
+            delWrapper.eq("model_id", modelInfo.getModelId());
+            roomInfoService.remove(delWrapper);
+            roomInfoService.saveBatch(modelRooms);
 
-		List<ModelRoom> mrList = new ArrayList<>(16);
-		for (RoomInfo roomInfo : modelRooms) {
-			ModelRoom mr = new ModelRoom();
-			mr.setModelId(modelInfo.getModelId());
-			mr.setRoomId(roomInfo.getRoomId());
-			mrList.add(mr);
-		}
-		modelRoomService.saveBatch(mrList);
+            List<ModelRoom> mrList = new ArrayList<>(16);
+            for (RoomInfo roomInfo : modelRooms) {
+                ModelRoom mr = new ModelRoom();
+                mr.setModelId(modelInfo.getModelId());
+                mr.setRoomId(roomInfo.getRoomId());
+                mrList.add(mr);
+            }
+            modelRoomService.saveBatch(mrList);
+        }
     }
 
     @Override

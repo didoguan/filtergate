@@ -1,6 +1,7 @@
 package com.deepspc.filtergate.modular.warm.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.deepspc.filtergate.core.reqres.response.ResponseData;
 import com.deepspc.filtergate.modular.controller.BaseController;
 import com.deepspc.filtergate.modular.warm.entity.*;
@@ -51,12 +52,11 @@ public class WarmController extends BaseController {
     @ResponseBody
 	public Object addUpdateModel(@RequestBody ModelSaveDto dto) {
         ResponseData resp = new ResponseData(true, 200, null, null);
-        Object id = this.getHttpServletRequest().getAttribute("tokenUserId");
-        if (null != id) {
-            warmService.saveUpdateModelRoom(dto, Long.valueOf(id.toString()));
+        if (null != dto && null != dto.getCustomerId()) {
+            warmService.saveUpdateModelRoom(dto, dto.getCustomerId());
         } else {
-            resp.setCode(201);
-            resp.setMessage("token不合法！");
+            resp.setCode(202);
+            resp.setMessage("客户标识不能为空");
             resp.setSuccess(false);
         }
         return resp;
