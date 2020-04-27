@@ -1,11 +1,7 @@
 package com.deepspc.filtergate.modular.warm.service;
 
-import com.deepspc.filtergate.modular.warm.entity.CustomerConf;
-import com.deepspc.filtergate.modular.warm.entity.Message;
-import com.deepspc.filtergate.modular.warm.entity.RoomHis;
-import com.deepspc.filtergate.modular.warm.entity.RoomInfo;
+import com.deepspc.filtergate.modular.warm.entity.*;
 import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
-import com.deepspc.filtergate.modular.warm.model.ModelData;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
 
 import java.util.List;
@@ -17,7 +13,7 @@ public interface IWarmService {
 	 * @param customerId
 	 * @return
 	 */
-	ModelData getAllModels(Long customerId);
+    List<ModelInfo> getAllModels(Long customerId);
 
     /**
      * 新增或更新模式及房间信息

@@ -1,12 +1,10 @@
 package com.deepspc.filtergate.modular.warm.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
 import com.deepspc.filtergate.core.reqres.response.ResponseData;
 import com.deepspc.filtergate.modular.controller.BaseController;
 import com.deepspc.filtergate.modular.warm.entity.*;
 import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
-import com.deepspc.filtergate.modular.warm.model.ModelData;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
 import com.deepspc.filtergate.modular.warm.service.IWarmService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +36,7 @@ public class WarmController extends BaseController {
 	@ResponseBody
 	public Object getAllModels(@RequestParam Long customerId) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
-		ModelData modelData = warmService.getAllModels(customerId);
-		resp.setData(modelData);
+		resp.setData(warmService.getAllModels(customerId));
 		return resp;
 	}
 

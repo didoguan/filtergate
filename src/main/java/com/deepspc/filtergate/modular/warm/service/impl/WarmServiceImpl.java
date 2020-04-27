@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deepspc.filtergate.modular.warm.entity.*;
 import com.deepspc.filtergate.modular.warm.mapper.*;
 import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
-import com.deepspc.filtergate.modular.warm.model.ModelData;
-import com.deepspc.filtergate.modular.warm.model.ModelRoomDto;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
 import com.deepspc.filtergate.modular.warm.service.*;
 import com.deepspc.filtergate.utils.ToolUtil;
@@ -44,25 +42,18 @@ public class WarmServiceImpl implements IWarmService {
 	private WarmMapper warmMapper;
 
 	@Override
-	public ModelData getAllModels(Long customerId) {
-		ModelData data = new ModelData();
+	public List<ModelInfo> getAllModels(Long customerId) {
 		QueryWrapper<ModelInfo> miWrapper = new QueryWrapper<>();
 		miWrapper.eq("customer_id", customerId);
 		miWrapper.orderByAsc("model_id");
 		List<ModelInfo> modelInfos = modelInfoMapper.selectList(miWrapper);
-		data.setModelInfos(modelInfos);
 		if (null != modelInfos && !modelInfos.isEmpty()) {
 			for (ModelInfo modelInfo : modelInfos) {
-				//获取所有可用房间
-				if (modelInfo.getStatus().intValue() == 1) {
-					long modelId = modelInfo.getModelId().longValue();
-					List<ModelRoomDto> list = warmMapper.getModelRooms(modelId, customerId);
-					data.setModelRooms(list);
-					break;
-				}
+                long modelId = modelInfo.getModelId().longValue();
+                modelInfo.setRooms(warmMapper.getModelRooms(modelId, customerId));
 			}
 		}
-		return data;
+		return modelInfos;
 	}
 
 	@Transactional

@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.deepspc.filtergate.modular.warm.model.ModelRoomDto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Description 模式
@@ -48,6 +50,11 @@ public class ModelInfo implements Serializable {
 
 	@TableField("icon_path")
 	private String iconPath;
+    /**
+     * 当前模式下的所有房间
+     */
+    @TableField(exist = false)
+	private List<ModelRoomDto> rooms;
 
 	public ModelInfo() {
 
