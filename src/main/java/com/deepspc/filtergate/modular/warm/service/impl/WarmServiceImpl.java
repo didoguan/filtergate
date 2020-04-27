@@ -120,7 +120,14 @@ public class WarmServiceImpl implements IWarmService {
             throw new ServiceException(401, "房间" + room.getRoomName()+" 已经存在");
         }
         roomInfoService.save(roomInfo);
-        return roomInfo.getRoomId();
+        Long roomId = roomInfo.getRoomId();
+        if (null != roomInfo.getModelId()) {
+            ModelRoom mr = new ModelRoom();
+            mr.setRoomId(roomId);
+            mr.setModelId(roomInfo.getModelId());
+            modelRoomService.save(mr);
+        }
+        return roomId;
     }
 
     @Override
