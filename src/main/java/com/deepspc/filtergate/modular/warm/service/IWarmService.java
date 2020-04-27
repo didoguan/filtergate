@@ -16,6 +16,13 @@ public interface IWarmService {
     List<ModelInfo> getAllModels(Long customerId);
 
     /**
+     * 获取所有房间
+     * @param customerId
+     * @return
+     */
+    List<RoomInfo> getAllRooms(Long customerId);
+
+    /**
      * 新增或更新模式及房间信息
      * @param dto
      */
@@ -28,21 +35,26 @@ public interface IWarmService {
 	void deleteModel(Long modelId);
 
     /**
-     * 添加房间到指定模式
+     * 添加房间，返回已保存的房间标识
      */
-	void addModelsRoom(List<RoomInfo> roomInfos);
+	Long addRoom(RoomInfo roomInfo);
 
     /**
      * 删除模式下的房间
+     */
+	void deleteModelRooms(Long modelId, String roomIds);
+
+    /**
+     * 删除房间
      * @param ids
      */
-	void delteModelsRooms(String ids);
+	void deleteRooms(String ids);
 
 	/**
-	 * 修改模式下的房间
+	 * 修改房间
 	 * @param roomInfo
 	 */
-	void updateModelRoom(RoomInfo roomInfo);
+	void updateRoom(RoomInfo roomInfo);
 
 	/**
 	 * 获取所有消息

@@ -6,6 +6,8 @@ import com.deepspc.filtergate.modular.warm.mapper.ModelRoomMapper;
 import com.deepspc.filtergate.modular.warm.service.IModelRoomService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * @Description
  * @Author didoguan
@@ -13,4 +15,11 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class ModelRoomService extends ServiceImpl<ModelRoomMapper, ModelRoom> implements IModelRoomService{
+    @Resource
+    private ModelRoomMapper modelRoomMapper;
+
+    @Override
+    public void deleteModelRooms(Long modelId, String roomIds) {
+        modelRoomMapper.deleteModelRooms(modelId, roomIds);
+    }
 }

@@ -1,6 +1,7 @@
 package com.deepspc.filtergate.modular.warm.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.deepspc.filtergate.core.exception.ServiceException;
 import com.deepspc.filtergate.modular.warm.entity.*;
 import com.deepspc.filtergate.modular.warm.mapper.*;
 import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
@@ -56,11 +57,17 @@ public class WarmServiceImpl implements IWarmService {
 		return modelInfos;
 	}
 
-	@Transactional
+    @Override
+    public List<RoomInfo> getAllRooms(Long customerId) {
+	    QueryWrapper<RoomInfo> queryWrapper = new QueryWrapper<>();
+	    queryWrapper.orderByAsc("room_id");
+        return roomInfoService.list(queryWrapper);
+    }
+
+    @Transactional
     @Override
     public void saveUpdateModelRoom(ModelSaveDto dto, Long customerId) {
         ModelInfo modelInfo = dto.getModelInfo();
-        List<RoomInfo> modelRooms = dto.getModelRooms();
         int status = modelInfo.getStatus().intValue();
         Map<String, Object> params = new HashMap<>(16);
 		params.put("relationId", modelInfo.getIconId());
@@ -77,19 +84,22 @@ public class WarmServiceImpl implements IWarmService {
 		}
         modelInfoService.saveOrUpdate(modelInfo);
 
+        List<Long> modelRooms = dto.getModelRooms();
 		if (null != modelRooms && !modelRooms.isEmpty()) {
-            for (RoomInfo roomInfo : modelRooms) {
-                roomInfo.setCustomerId(customerId);
-                roomInfo.setModelId(modelInfo.getModelId());
-            }
             //先删除当前模式下所有房间
-            QueryWrapper<RoomInfo> delWrapper = new QueryWrapper<>();
-            delWrapper.eq("customer_id", customerId);
+            QueryWrapper<ModelRoom> delWrapper = new QueryWrapper<>();
             delWrapper.eq("model_id", modelInfo.getModelId());
-            roomInfoService.remove(delWrapper);
-            roomInfoService.saveBatch(modelRooms);
+            modelRoomService.remove(delWrapper);
 
-			batchSaveModelRoom(modelRooms);
+            List<ModelRoom> mrs = new ArrayList<>(16);
+            for (Long roomId : modelRooms) {
+                ModelRoom mr = new ModelRoom();
+                mr.setModelId(modelInfo.getModelId());
+                mr.setRoomId(roomId);
+                mrs.add(mr);
+            }
+            //保存模式和房间关系
+            modelRoomService.saveBatch(mrs);
         }
     }
 
@@ -101,33 +111,35 @@ public class WarmServiceImpl implements IWarmService {
 
     @Override
     @Transactional
-    public void addModelsRoom(List<RoomInfo> roomInfos) {
-		if (null != roomInfos && !roomInfos.isEmpty()) {
-			roomInfoService.saveBatch(roomInfos);
-			batchSaveModelRoom(roomInfos);
-		}
+    public Long addRoom(RoomInfo roomInfo) {
+        QueryWrapper<RoomInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("unique_no", roomInfo.getUniqueNo());
+        queryWrapper.eq("serial_no", roomInfo.getSerialNo());
+        RoomInfo room = roomInfoService.getOne(queryWrapper);
+        if (null != roomInfo) {
+            throw new ServiceException(401, "房间" + room.getRoomName()+" 已经存在");
+        }
+        roomInfoService.save(roomInfo);
+        return roomInfo.getRoomId();
     }
-
-	/**
-	 * 保存模式与房间的关系
-	 * @param rooms
-	 */
-	private void batchSaveModelRoom(List<RoomInfo> rooms) {
-		if (null != rooms && !rooms.isEmpty()) {
-			List<ModelRoom> mrList = new ArrayList<>(16);
-			for (RoomInfo roomInfo : rooms) {
-				ModelRoom mr = new ModelRoom();
-				mr.setModelId(roomInfo.getModelId());
-				mr.setRoomId(roomInfo.getRoomId());
-				mrList.add(mr);
-			}
-			modelRoomService.saveBatch(mrList);
-		}
-	}
 
     @Override
     @Transactional
-    public void delteModelsRooms(String ids) {
+    public void deleteModelRooms(Long modelId, String roomIds) {
+	    String[] roomId = roomIds.split(",");
+	    String ids = "";
+        for (int i = 0; i < roomId.length; i++) {
+            if (i > 0) {
+                ids += ",";
+            }
+            ids += "'" + roomId[i] + ",";
+        }
+        modelRoomService.deleteModelRooms(modelId, ids);
+    }
+
+    @Override
+    @Transactional
+    public void deleteRooms(String ids) {
         String[] delId = ids.split(",");
         for (String id : delId) {
             roomInfoService.removeById(Long.valueOf(id));
@@ -136,7 +148,7 @@ public class WarmServiceImpl implements IWarmService {
 
 	@Override
 	@Transactional
-    public void updateModelRoom(RoomInfo roomInfo) {
+    public void updateRoom(RoomInfo roomInfo) {
 		Map<String, Object> params = new HashMap<>(16);
 		params.put("relationId", roomInfo.getIconId());
 		int status = roomInfo.getStatus().intValue();

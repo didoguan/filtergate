@@ -20,7 +20,7 @@ public class ModelSaveDto implements Serializable {
 
     private ModelInfo modelInfo;
 
-    private List<RoomInfo> modelRooms;
+    private List<Long> modelRooms;
 
     public ModelSaveDto() {
 

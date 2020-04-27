@@ -1,9 +1,11 @@
 package com.deepspc.filtergate.modular.warm.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.deepspc.filtergate.core.exception.ServiceException;
 import com.deepspc.filtergate.core.reqres.response.ResponseData;
 import com.deepspc.filtergate.modular.controller.BaseController;
 import com.deepspc.filtergate.modular.warm.entity.*;
+import com.deepspc.filtergate.modular.warm.model.DeleteOperParam;
 import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
 import com.deepspc.filtergate.modular.warm.service.IWarmService;
@@ -39,6 +41,19 @@ public class WarmController extends BaseController {
 		resp.setData(warmService.getAllModels(customerId));
 		return resp;
 	}
+
+    /**
+     * 获取所有房间
+     * @param customerId
+     * @return
+     */
+    @RequestMapping(value = "/getAllRooms")
+    @ResponseBody
+	public Object getAllRooms(@RequestParam Long customerId) {
+        ResponseData resp = new ResponseData(true, 200, null, null);
+        resp.setData(warmService.getAllRooms(customerId));
+	    return resp;
+    }
 
 	/**
 	 * 添加或修改模式
@@ -78,17 +93,39 @@ public class WarmController extends BaseController {
         return resp;
     }
 
+    /**
+     * 删除模式下的房间
+     */
+    @RequestMapping(value = "/removeModelRoom")
+    @ResponseBody
+    public Object removeModelRoom(@RequestBody DeleteOperParam param) {
+        ResponseData resp = new ResponseData(true, 200, null, null);
+	    if (null != param.getModelId() && StrUtil.isNotBlank(param.getIds())) {
+            warmService.deleteModelRooms(param.getModelId(), param.getIds());
+        } else {
+            resp.setCode(202);
+            resp.setSuccess(false);
+            resp.setMessage("模式标识为空");
+        }
+	    return resp;
+    }
+
 	/**
 	 * 增加房间
-	 * @param roomInfos
 	 * @return
 	 */
 	@RequestMapping(value = "/addRoom")
     @ResponseBody
-    public Object addRoom(@RequestBody List<RoomInfo> roomInfos) {
+    public Object addRoom(@RequestBody RoomInfo roomInfo) {
         ResponseData resp = new ResponseData(true, 200, null, null);
-        if (null != roomInfos && !roomInfos.isEmpty()) {
-            warmService.addModelsRoom(roomInfos);
+        if (null != roomInfo) {
+            try {
+                warmService.addRoom(roomInfo);
+            } catch (ServiceException e) {
+                resp.setCode(e.getCode());
+                resp.setMessage(e.getMessage());
+                resp.setSuccess(false);
+            }
         } else {
 			resp.setCode(201);
 			resp.setSuccess(false);
@@ -97,12 +134,16 @@ public class WarmController extends BaseController {
         return resp;
     }
 
+    /**
+     * 修改房间
+     * @return
+     */
 	@RequestMapping(value = "/editRoom")
 	@ResponseBody
     public Object editRoom(@RequestBody RoomInfo roomInfo) {
 		ResponseData resp = new ResponseData(true, 200, null, null);
 		if (null != roomInfo) {
-			warmService.updateModelRoom(roomInfo);
+			warmService.updateRoom(roomInfo);
 		} else {
 			resp.setCode(201);
 			resp.setSuccess(false);
@@ -113,7 +154,6 @@ public class WarmController extends BaseController {
 
 	/**
 	 * 删除房间
-	 * @param roomIds
 	 * @return
 	 */
 	@RequestMapping(value = "/removeRoom")
@@ -121,7 +161,7 @@ public class WarmController extends BaseController {
     public Object removeRoom(String roomIds) {
         ResponseData resp = new ResponseData(true, 200, null, null);
         if (StrUtil.isNotBlank(roomIds)) {
-            warmService.delteModelsRooms(roomIds);
+            warmService.deleteRooms(roomIds);
         } else {
 			resp.setCode(201);
 			resp.setSuccess(false);

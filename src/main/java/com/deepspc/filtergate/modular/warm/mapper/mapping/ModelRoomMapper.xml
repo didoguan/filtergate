@@ -9,5 +9,7 @@
         <result column="room_id" property="roomId"/>
     </resultMap>
 
-
+    <delete id="deleteModelRooms">
+        delete from wm_model_room where model_id = #{modelId} and room_id in (#{roomIds})
+    </delete>
 </mapper>
