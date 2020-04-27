@@ -50,7 +50,7 @@ public class WarmServiceImpl implements IWarmService {
 		List<ModelInfo> modelInfos = modelInfoMapper.selectList(miWrapper);
 		if (null != modelInfos && !modelInfos.isEmpty()) {
 			for (ModelInfo modelInfo : modelInfos) {
-                long modelId = modelInfo.getModelId().longValue();
+                long modelId = modelInfo.getModelId();
                 modelInfo.setRooms(warmMapper.getModelRooms(modelId, customerId));
 			}
 		}
@@ -116,7 +116,7 @@ public class WarmServiceImpl implements IWarmService {
         queryWrapper.eq("unique_no", roomInfo.getUniqueNo());
         queryWrapper.eq("serial_no", roomInfo.getSerialNo());
         RoomInfo room = roomInfoService.getOne(queryWrapper);
-        if (null != roomInfo) {
+        if (null != room) {
             throw new ServiceException(401, "房间" + room.getRoomName()+" 已经存在");
         }
         roomInfoService.save(roomInfo);
@@ -132,7 +132,7 @@ public class WarmServiceImpl implements IWarmService {
             if (i > 0) {
                 ids += ",";
             }
-            ids += "'" + roomId[i] + ",";
+            ids += "'" + roomId[i] + "'";
         }
         modelRoomService.deleteModelRooms(modelId, ids);
     }
