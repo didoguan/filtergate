@@ -1,18 +1,25 @@
 package com.deepspc.filtergate.modular.warm.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deepspc.filtergate.core.exception.ServiceException;
+import com.deepspc.filtergate.modular.nettyclient.core.NettyClient;
+import com.deepspc.filtergate.modular.nettyclient.model.DeviceData;
+import com.deepspc.filtergate.modular.nettyclient.model.MessageData;
 import com.deepspc.filtergate.modular.warm.entity.*;
 import com.deepspc.filtergate.modular.warm.mapper.*;
 import com.deepspc.filtergate.modular.warm.model.IconInfoDto;
 import com.deepspc.filtergate.modular.warm.model.ModelSaveDto;
 import com.deepspc.filtergate.modular.warm.service.*;
 import com.deepspc.filtergate.utils.ToolUtil;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -27,20 +34,24 @@ public class WarmServiceImpl implements IWarmService {
     private IModelInfoService modelInfoService;
     @Autowired
     private IRoomInfoService roomInfoService;
+    @Autowired
+    private IModelRoomService modelRoomService;
+    @Autowired
+    private ICustomerConfService customerConfService;
+    @Autowired
+    private IRoomHisService roomHisService;
 	@Resource
 	private ModelInfoMapper modelInfoMapper;
 	@Resource
 	private MessageMapper messageMapper;
 	@Resource
 	private IconInfoMapper iconInfoMapper;
-	@Autowired
-	private IModelRoomService modelRoomService;
-	@Autowired
-	private ICustomerConfService customerConfService;
-	@Autowired
-	private IRoomHisService roomHisService;
+	@Resource
+	private EquipmentInfoMapper equipmentInfoMapper;
 	@Resource
 	private WarmMapper warmMapper;
+    @Autowired
+	private NettyClient nettyClient;
 
 	@Override
 	public List<ModelInfo> getAllModels(Long customerId) {
@@ -127,6 +138,8 @@ public class WarmServiceImpl implements IWarmService {
             mr.setModelId(roomInfo.getModelId());
             modelRoomService.save(mr);
         }
+        //向终端发送数据
+        sendRoomData(roomInfo);
         return roomId;
     }
 
@@ -173,6 +186,8 @@ public class WarmServiceImpl implements IWarmService {
 		QueryWrapper<RoomInfo> updWrapper = new QueryWrapper<>();
 		updWrapper.eq("unique_no", roomInfo.getUniqueNo());
 		roomInfoService.update(roomInfo, updWrapper);
+        //向终端发送数据
+        sendRoomData(roomInfo);
 	}
 
 	@Override
@@ -251,4 +266,39 @@ public class WarmServiceImpl implements IWarmService {
 	public List<IconInfoDto> getAllAccessIcon(Integer iconType) {
 		return iconInfoMapper.getAllAccessIcon(iconType);
 	}
+
+    /**
+     * 发送数据到Netty
+     * @param roomInfo 房间数据
+     */
+    private void sendRoomData(RoomInfo roomInfo) {
+        MessageData messageData = new MessageData();
+        DeviceData deviceData = new DeviceData();
+        List<DeviceData> deviceDataList = new ArrayList<>(1);
+        deviceData.setUniqueNo(roomInfo.getUniqueNo());
+        deviceData.setSerialNo(roomInfo.getSerialNo());
+        deviceData.setTemperature(roomInfo.getTemperature());
+        deviceData.setStartTime(roomInfo.getStartTime());
+        deviceData.setEndTime(roomInfo.getEndTime());
+        deviceDataList.add(deviceData);
+        messageData.setDeviceDatas(deviceDataList);
+        String str = JSON.toJSONString(messageData);
+        QueryWrapper<EquipmentInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_id", roomInfo.getCustomerId());
+        queryWrapper.eq("equipment_type", 1);
+        EquipmentInfo equipmentInfo = equipmentInfoMapper.selectOne(queryWrapper);
+        if (null != equipmentInfo) {
+            messageData.setId(equipmentInfo.getUniqueNo() + "_spb");
+        }
+        //创建netty连接，传送设置数据到终端设备
+        nettyClient.start();
+        try {
+            byte[] strByte = str.getBytes("UTF-8");
+            ByteBuf btu = Unpooled.wrappedBuffer(strByte);
+            //传到终端设备进行设置
+            nettyClient.send(btu);
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 }
