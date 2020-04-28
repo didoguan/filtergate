@@ -120,7 +120,8 @@ public class WarmController extends BaseController {
         ResponseData resp = new ResponseData(true, 200, null, null);
         if (null != roomInfo) {
             try {
-                warmService.addRoom(roomInfo);
+                Long roomId = warmService.addRoom(roomInfo);
+                resp.setData(roomId);
             } catch (ServiceException e) {
                 resp.setCode(e.getCode());
                 resp.setMessage(e.getMessage());
