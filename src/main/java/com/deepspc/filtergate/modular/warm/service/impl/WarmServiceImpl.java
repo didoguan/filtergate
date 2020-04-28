@@ -23,6 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * @Description 供暖服务类
  * @Author didoguan
@@ -139,7 +141,7 @@ public class WarmServiceImpl implements IWarmService {
             modelRoomService.save(mr);
         }
         //向终端发送数据
-        sendRoomData(roomInfo);
+        //sendRoomData(roomInfo);
         return roomId;
     }
 
@@ -152,7 +154,7 @@ public class WarmServiceImpl implements IWarmService {
             if (i > 0) {
                 ids += ",";
             }
-            ids += "'" + roomId[i] + "'";
+            ids += roomId[i];
         }
         modelRoomService.deleteModelRooms(modelId, ids);
     }
@@ -160,10 +162,11 @@ public class WarmServiceImpl implements IWarmService {
     @Override
     @Transactional
     public void deleteRooms(String ids) {
-        String[] delId = ids.split(",");
-        for (String id : delId) {
-            roomInfoService.removeById(Long.valueOf(id));
-        }
+		String[] idArray = ids.split(",");
+		List<Long> roomIds = Arrays.stream(idArray).map(n -> Long.valueOf(n)).collect(toList());
+		roomInfoService.removeByIds(roomIds);
+        //删除关联模式的房间
+		modelRoomService.removeByIds(roomIds);
     }
 
 	@Override
@@ -187,7 +190,7 @@ public class WarmServiceImpl implements IWarmService {
 		updWrapper.eq("unique_no", roomInfo.getUniqueNo());
 		roomInfoService.update(roomInfo, updWrapper);
         //向终端发送数据
-        sendRoomData(roomInfo);
+        //sendRoomData(roomInfo);
 	}
 
 	@Override
