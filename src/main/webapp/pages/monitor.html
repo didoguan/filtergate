@@ -7,21 +7,21 @@
         var timeout;
 
         function buildWebsocket() {
-            var ws = new WebSocket("ws://localhost:8800/wst");
+            var ws = new WebSocket("ws://118.25.66.65:8800/wst");
             ws.onopen = function(){
                 clearTimeout(timeout);
                 //与服务器创建连接
                 console.log("=========建立连接=========");
-                var data = {code:"1236251807393316866_wsk",msg:"",data:[]};
+                var data = {code:"1236251807393316866",msg:"",data:[]};
                 ws.send(JSON.stringify(data));
             }
             ws.onmessage = function(e){
                 //与服务器接收服务器发送的信息
-                document.write(e.data);
+                document.writeln(e.data);
             }
             ws.onclose = function(e){
                 //与服务器断开连接
-                document.write("=========断开连接=========");
+                document.writeln("=========断开连接=========");
                 reconnect();
             }
             ws.onerror = function(e){
