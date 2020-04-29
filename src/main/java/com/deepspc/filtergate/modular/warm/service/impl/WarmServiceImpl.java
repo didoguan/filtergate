@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deepspc.filtergate.core.exception.ServiceException;
 import com.deepspc.filtergate.modular.nettyclient.core.NettyClient;
+import com.deepspc.filtergate.modular.nettyclient.core.SendDataPools;
 import com.deepspc.filtergate.modular.nettyclient.model.DeviceData;
 import com.deepspc.filtergate.modular.nettyclient.model.MessageData;
 import com.deepspc.filtergate.modular.warm.entity.*;
@@ -54,6 +55,8 @@ public class WarmServiceImpl implements IWarmService {
 	private WarmMapper warmMapper;
     @Autowired
 	private NettyClient nettyClient;
+    @Autowired
+    private SendDataPools sendDataPools;
 
 	@Override
 	public List<ModelInfo> getAllModels(Long customerId) {
@@ -141,7 +144,10 @@ public class WarmServiceImpl implements IWarmService {
             modelRoomService.save(mr);
         }
         //向终端发送数据
-        //sendRoomData(roomInfo);
+        Runnable runnable = () -> {
+            sendRoomData(roomInfo);
+        };
+        sendDataPools.executeTask(runnable);
         return roomId;
     }
 
@@ -190,7 +196,10 @@ public class WarmServiceImpl implements IWarmService {
 		updWrapper.eq("unique_no", roomInfo.getUniqueNo());
 		roomInfoService.update(roomInfo, updWrapper);
         //向终端发送数据
-        //sendRoomData(roomInfo);
+        Runnable runnable = () -> {
+            sendRoomData(roomInfo);
+        };
+        sendDataPools.executeTask(runnable);
 	}
 
 	@Override
@@ -294,12 +303,10 @@ public class WarmServiceImpl implements IWarmService {
             messageData.setId(equipmentInfo.getUniqueNo() + "_spb");
         }
         //创建netty连接，传送设置数据到终端设备
-        nettyClient.start();
         try {
             byte[] strByte = str.getBytes("UTF-8");
             ByteBuf btu = Unpooled.wrappedBuffer(strByte);
-            //传到终端设备进行设置
-            nettyClient.send(btu);
+            nettyClient.startAndSend(btu);
         } catch(UnsupportedEncodingException e) {
             e.printStackTrace();
         }

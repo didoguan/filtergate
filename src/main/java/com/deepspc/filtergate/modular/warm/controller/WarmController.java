@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 供暖监控控制器
@@ -159,8 +160,9 @@ public class WarmController extends BaseController {
 	 */
 	@RequestMapping(value = "/removeRoom")
     @ResponseBody
-    public Object removeRoom(String roomIds) {
+    public Object removeRoom(@RequestBody Map<String,String> param) {
         ResponseData resp = new ResponseData(true, 200, null, null);
+        String roomIds = param.get("roomIds");
         if (StrUtil.isNotBlank(roomIds)) {
             warmService.deleteRooms(roomIds);
         } else {
