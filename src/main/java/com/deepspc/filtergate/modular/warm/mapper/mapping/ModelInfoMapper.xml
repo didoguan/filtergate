@@ -6,6 +6,8 @@
     <resultMap id="BaseResultMap" type="com.deepspc.filtergate.modular.warm.entity.ModelInfo">
         <id column="mode_id" property="modelId"/>
         <result column="mode_name" property="modelName"/>
+        <result column="start_week" property="startWeek"/>
+        <result column="end_week" property="endWeek"/>
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
         <result column="status" property="status"/>

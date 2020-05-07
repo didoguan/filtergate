@@ -84,20 +84,9 @@ public class WarmServiceImpl implements IWarmService {
     @Override
     public void saveUpdateModelRoom(ModelSaveDto dto, Long customerId) {
         ModelInfo modelInfo = dto.getModelInfo();
-        int status = modelInfo.getStatus().intValue();
-        Map<String, Object> params = new HashMap<>(16);
-		params.put("relationId", modelInfo.getIconId());
-        if (1 == status) {
-			params.put("useType", 1);
-		} else if (0 == status) {
-			params.put("useType", 0);
-		}
-		List<IconInfoDto> dtos = iconInfoMapper.getIconInfos(params);
-		if (null != dtos && !dtos.isEmpty()) {
-			IconInfoDto iconInfoDto = dtos.get(0);
-			modelInfo.setIconId(iconInfoDto.getIconId());
-			modelInfo.setIconPath(iconInfoDto.getAccessPath());
-		}
+        //更新模式状态
+		updateModelStatus(modelInfo);
+
         modelInfoService.saveOrUpdate(modelInfo);
 
         List<Long> modelRooms = dto.getModelRooms();
@@ -118,6 +107,40 @@ public class WarmServiceImpl implements IWarmService {
             modelRoomService.saveBatch(mrs);
         }
     }
+
+    private void updateModelStatus(ModelInfo modelInfo) {
+		Map<String, Object> params = new HashMap<>(16);
+		//如果启用当前模式，则先判断是否已经有启用的模式，有则停用已启用的模式
+		if (modelInfo.getStatus().intValue() == 1) {
+			QueryWrapper<ModelInfo> queryModel = new QueryWrapper<>();
+			queryModel.eq("status", modelInfo.getStatus());
+			List<ModelInfo> modelInfos = modelInfoMapper.selectList(queryModel);
+			if (null != modelInfos && !modelInfos.isEmpty()) {
+				for (ModelInfo model : modelInfos) {
+					//停用已启用的模式
+					params.put("relationId", model.getIconId());
+					params.put("useType", 0);
+					List<IconInfoDto> dtos = iconInfoMapper.getIconInfos(params);
+					if (null != dtos && !dtos.isEmpty()) {
+						IconInfoDto iconInfoDto = dtos.get(0);
+						model.setIconId(iconInfoDto.getIconId());
+						model.setIconPath(iconInfoDto.getAccessPath());
+					}
+					model.setStatus(0);
+					modelInfoMapper.updateById(model);
+				}
+			}
+		}
+		//更新当前模式状态
+		params.put("relationId", modelInfo.getIconId());
+		params.put("useType", modelInfo.getStatus());
+		List<IconInfoDto> dtos = iconInfoMapper.getIconInfos(params);
+		if (null != dtos && !dtos.isEmpty()) {
+			IconInfoDto iconInfoDto = dtos.get(0);
+			modelInfo.setIconId(iconInfoDto.getIconId());
+			modelInfo.setIconPath(iconInfoDto.getAccessPath());
+		}
+	}
 
     @Override
     @Transactional

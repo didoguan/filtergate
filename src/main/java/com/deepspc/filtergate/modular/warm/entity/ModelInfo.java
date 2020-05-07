@@ -27,6 +27,12 @@ public class ModelInfo implements Serializable {
 	@TableField("model_name")
 	private String modelName;
 
+	@TableField("start_week")
+	private String startWeek;
+
+	@TableField("end_week")
+	private String endWeek;
+
 	@TableField("start_time")
 	private String startTime;
 
@@ -37,7 +43,6 @@ public class ModelInfo implements Serializable {
 	 * 0-不可用
 	 * 1-可用
 	 * 2-删除
-	 * 3-运行中
 	 */
 	@TableField("status")
 	private Integer status;

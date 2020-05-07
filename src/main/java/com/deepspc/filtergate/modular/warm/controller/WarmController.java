@@ -308,7 +308,7 @@ public class WarmController extends BaseController {
 
 	/**
 	 * 获取所有可选的小图标
-	 * @param iconType 1-头像 2-小图标
+	 * @param iconType 1-头像 2-模式 3-房间
 	 * @return
 	 */
 	@RequestMapping(value = "/getAllSelIcon")
