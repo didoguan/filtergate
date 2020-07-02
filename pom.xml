@@ -26,7 +26,7 @@
 		<beetl.version>2.9.9</beetl.version>
 		<swagger.version>2.9.2</swagger.version>
 		<ehcache.core.version>2.6.11</ehcache.core.version>
-		<mysql-connector-java.version>8.0.11</mysql-connector-java.version>
+		<mysql-connector-java.version>8.0.16</mysql-connector-java.version>
 		<mybatis-plus.version>3.1.0</mybatis-plus.version>
 		<fastjson.version>1.2.57</fastjson.version>
 		<hutool.version>4.4.0</hutool.version>
